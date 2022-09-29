@@ -26,7 +26,7 @@
               (
                 { pkgs, modulesPath, ... }:
                 {
-                  # https://github.com/NixOS/nixpkgs/issues/126755#issuecomment-869149243
+                  #shttps://github.com/NixOS/nixpkgs/issues/126755#issuecomment-869149243
                   nixpkgs.overlays = [
                     (final: super: {
                       makeModulesClosure = x:
@@ -34,14 +34,12 @@
                     })
                   ];
                   imports = [
-                    # (modulesPath + "/profiles/installation-device.nix")
                     (modulesPath + "/installer/sd-card/sd-image-aarch64.nix")
-                    # (./pi4/sd-image-aarch64.nix)
                   ];
                   boot.kernelPackages = pkgs.linuxPackages_rpi4;
                   # the installation media is also the installation target,
                   # so we don't want to provide the installation configuration.nix.
-                  # installer.cloneConfig = false;
+                  installer.cloneConfig = false;
                 }
               )
               ({ pkgs, ... }: {
