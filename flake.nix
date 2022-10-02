@@ -1,24 +1,29 @@
 {
   description = "A very basic flake";
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  # From a older release-22.05
   inputs.nixpkgs.url = "github:nixos/nixpkgs/release-22.05";
+  inputs.nixpkgsDarwin.url = "github:nixos/nixpkgs/nixpkgs-22.05-darwin";
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, nixpkgsDarwin, flake-utils }:
     (flake-utils.lib.eachDefaultSystem
       (system:
         let
-          pkgs = import nixpkgs { system = system; };
+          pkgs =
+            import (if (builtins.elemAt (builtins.split "-" system) 2) == "darwin" then nixpkgsDarwin else nixpkgs)
+              {
+                system = system;
+              };
         in
         {
-          packages.hello = pkgs.hello;
-          defaultPackage = self.packages.${system}.hello;
+          defaultPackage = pkgs.hello;
           devShell = pkgs.mkShell {
-            buildInputs = [ pkgs.hello ];
+            buildInputs = [ pkgs.zstd pkgs.git-crypt ];
           };
         })) //
     {
       nixosConfigurations = {
-        # GC_DONT_GC=1 nix build .#nixosConfigurations.pi.config.system.build.sdImage  
+        # nix build .#nixosConfigurations.pi.config.system.build.sdImage  
         pi = nixpkgs.lib.nixosSystem
           {
             system = "aarch64-linux";
@@ -37,15 +42,15 @@
                     (modulesPath + "/installer/sd-card/sd-image-aarch64.nix")
                   ];
                   boot.kernelPackages = pkgs.linuxPackages_rpi4;
-                  # the installation media is also the installation target,
-                  # so we don't want to provide the installation configuration.nix.
-                  installer.cloneConfig = false;
                 }
               )
               ({ pkgs, ... }: {
                 system.stateVersion = "22.05";
+
                 security.sudo.wheelNeedsPassword = false;
+
                 environment.systemPackages = with pkgs; [ vim fish ];
+
                 users.users.marco = {
                   isNormalUser = true;
                   extraGroups = [ "wheel" "libvirtd" ]; # Enable ‘sudo’ for the user.
@@ -53,7 +58,18 @@
                   shell = pkgs.fish;
                   openssh.authorizedKeys.keys = import ./pi-config/authorized-keys.nix;
                 };
+
                 networking.wireless.networks = { "Dinner Plans" = { psk = "@PSK_HOME@"; }; };
+
+                programs = {
+                  fish.enable = true;
+                };
+
+                services = {
+                  openssh = {
+                    enable = true;
+                  };
+                };
               })
             ];
           };
