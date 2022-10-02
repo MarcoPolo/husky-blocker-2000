@@ -18,8 +18,8 @@
         })) //
     {
       nixosConfigurations = {
-        # GC_DONT_GC=1 nix build .#nixosConfigurations.pi4SD.config.system.build.sdImage  
-        pi4SD = nixpkgs.lib.nixosSystem
+        # GC_DONT_GC=1 nix build .#nixosConfigurations.pi.config.system.build.sdImage  
+        pi = nixpkgs.lib.nixosSystem
           {
             system = "aarch64-linux";
             modules = [
@@ -51,8 +51,9 @@
                   extraGroups = [ "wheel" "libvirtd" ]; # Enable ‘sudo’ for the user.
                   createHome = true;
                   shell = pkgs.fish;
-                  # openssh.authorizedKeys.keys = import ./common/authorizedKeys.nix;
+                  openssh.authorizedKeys.keys = import ./pi-config/authorized-keys.nix;
                 };
+                networking.wireless.networks = { "Dinner Plans" = { psk = "@PSK_HOME@"; }; };
               })
             ];
           };
