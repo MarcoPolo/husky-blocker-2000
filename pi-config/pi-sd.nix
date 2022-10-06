@@ -10,6 +10,7 @@
   imports = [
     (modulesPath + "/installer/sd-card/sd-image-aarch64.nix")
   ];
-  boot.kernelPackages = pkgs.linuxPackages_rpi4;
+  # boot.kernelPackages = pkgs.linuxPackages_rpi4;
+  boot.kernelPackages = pkgs.linuxPackages;
 }
 

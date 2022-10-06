@@ -18,7 +18,7 @@
         {
           defaultPackage = pkgs.hello;
           devShell = pkgs.mkShell {
-            buildInputs = [ pkgs.zstd pkgs.git-crypt pkgs.colmena ];
+            buildInputs = [ pkgs.zstd pkgs.git-crypt pkgs.colmena pkgs.go_1_18 ];
           };
         })) //
     # Deployment

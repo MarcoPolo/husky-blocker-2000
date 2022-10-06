@@ -12,9 +12,9 @@
 # Power on/off
 
 ```
-echo '1-1' |sudo tee /sys/bus/usb/drivers/usb/unbind
+echo '1-1' > /sys/bus/usb/drivers/usb/unbind
 ```
 
 ```
-echo '1-1' |sudo tee /sys/bus/usb/drivers/usb/bind
+echo '1-1' > /sys/bus/usb/drivers/usb/bind
 ```

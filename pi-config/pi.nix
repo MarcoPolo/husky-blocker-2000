@@ -4,7 +4,7 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  environment.systemPackages = with pkgs; [ vim fish uhubctl htop ];
+  environment.systemPackages = with pkgs; [ vim fish uhubctl htop bluez ];
 
   # TODO 
   # Enable usb perms
@@ -17,10 +17,16 @@
     openssh.authorizedKeys.keys = import ./authorized-keys.nix;
   };
 
-  networking.wireless = {
-    enable = true;
-    networks = (import ../secret.nix).wifi;
+  networking = {
+    firewall.enable = false;
+
+    wireless = {
+      enable = true;
+      networks = (import ../secret.nix).wifi;
+    };
   };
+
+  hardware.bluetooth.enable = true;
 
   programs = {
     fish.enable = true;
@@ -31,4 +37,6 @@
       enable = true;
     };
   };
+
+  boot.kernelParams = pkgs.lib.mkForce [ "console=ttyS0,115200n8" "console=tty0" ];
 }

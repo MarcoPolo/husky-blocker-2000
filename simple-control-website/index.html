@@ -1,0 +1,30 @@
+<p id="statusEl">Current status: loading...</p>
+<button id="off"> HUSKY </button>
+<button id="on"> NO HUSKY </button>
+
+<script>
+    function updateStatus({ status }) {
+        statusEl.innerText = status
+    }
+
+    (async function () {
+        const res = await fetch("./status")
+        console.log("Resp from status is", res)
+        const body = await res.json()
+        console.log("body is", body)
+        updateStatus(body)
+    })();
+
+    off.onclick = async () => {
+        const res = await fetch("./off", { method: "POST" })
+        const body = await res.json()
+        updateStatus(body)
+    }
+
+    on.onclick = async () => {
+        const res = await fetch("./on", { method: "POST" })
+        const body = await res.json()
+        updateStatus(body)
+    }
+
+</script>
