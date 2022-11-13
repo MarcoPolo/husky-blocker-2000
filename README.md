@@ -11,12 +11,21 @@
 
 # Power on/off
 
+First you need to use uhubctl:
 ```
-echo '1-1' > /sys/bus/usb/drivers/usb/unbind
+sudo  uhubctl -l 2 -a 0 -e
+sudo uhubctl -l 1-1 -p 2 -a 0 -e
 ```
 
+
+poweroff:
 ```
-echo '1-1' > /sys/bus/usb/drivers/usb/bind
+echo '1-1' | sudo tee /sys/bus/usb/drivers/usb/unbind
+```
+
+poweron:
+```
+echo '1-1' | sudo tee /sys/bus/usb/drivers/usb/bind
 ```
 
 # Devlog
