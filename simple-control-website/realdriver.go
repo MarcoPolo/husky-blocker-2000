@@ -7,11 +7,25 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path"
 )
 
 const hub = "1-1"
 const dir = "/sys/bus/usb/drivers/usb"
+
+func init() {
+	// sudo uhubctl -l 2 -a 0 -e
+	// sudo uhubctl -l 1-1 -p 2 -a 0 -e
+	err := exec.Command("bash", "-c", "uhubctl -l 2 -a 0 -e").Run()
+	if err != nil {
+		panic(err)
+	}
+	exec.Command("uhubctl", "-l 1-1", "-p 2", "-a 0", "-e").Run()
+	if err != nil {
+		panic(err)
+	}
+}
 
 type Driver struct {
 	isOn bool
@@ -25,6 +39,7 @@ func (d *Driver) Status() bool {
 }
 
 func (d *Driver) Off() error {
+	d.isOn = false
 	err := os.WriteFile(path.Join(dir, "unbind"), []byte(hub+"\n"), 0)
 	if err != nil {
 		fmt.Println("Err", err)
@@ -33,6 +48,7 @@ func (d *Driver) Off() error {
 }
 
 func (d *Driver) On() error {
+	d.isOn = true
 	err := os.WriteFile(path.Join(dir, "bind"), []byte(hub+"\n"), 0)
 	if err != nil {
 		fmt.Println("Err", err)

@@ -11,6 +11,7 @@ func main() {
 	http.HandleFunc("/off", turnOff)
 	http.HandleFunc("/on", turnOn)
 	http.HandleFunc("/status", status)
+	http.HandleFunc("/toggle", toggle)
 	http.HandleFunc("/", index)
 	http.ListenAndServe(":8082", nil)
 }
@@ -21,6 +22,14 @@ func statusStr(status bool) string {
 	} else {
 		return "Off"
 	}
+}
+func toggle(w http.ResponseWriter, req *http.Request) {
+	if driver.isOn {
+		driver.Off()
+	} else {
+		driver.On()
+	}
+	status(w, req)
 }
 
 func turnOff(w http.ResponseWriter, req *http.Request) {
@@ -37,5 +46,5 @@ func status(w http.ResponseWriter, req *http.Request) {
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, "index.html")
+	http.ServeFile(w, req, "/root/index.html")
 }

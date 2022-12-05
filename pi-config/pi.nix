@@ -22,19 +22,19 @@
 
     wireless = {
       enable = true;
-      # networks = (import ../secret.nix).wifi;
+      networks = (import ../secret.nix).wifi;
     };
   };
 
-  services.create_ap = {
-    enable = true;
-    settings = {
-      INTERNET_IFACE = "eth0";
-      WIFI_IFACE = "wlan0";
-      SSID = "husky blocker 2000";
-      PASSPHRASE = "noding to see here";
-    };
-  };
+  # services.create_ap = {
+  #   enable = true;
+  #   settings = {
+  #     INTERNET_IFACE = "eth0";
+  #     WIFI_IFACE = "wlan0";
+  #     SSID = "husky blocker 2000";
+  #     PASSPHRASE = "noding to see here";
+  #   };
+  # };
 
   hardware.bluetooth.enable = true;
 
